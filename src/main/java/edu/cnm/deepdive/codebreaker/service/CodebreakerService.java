@@ -14,8 +14,11 @@ import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
+import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -43,7 +46,24 @@ enum CodebreakerService implements AbstractCodebreakerService {
 
   @Override
   public CompletableFuture<Game> startGame(Game game) {
-    throw new UnsupportedOperationException("Not yet implemented.");  }
+    CompletableFuture<Game> future = new CompletableFuture<>();
+    api
+        .startGame(game)
+        .enqueue(new Callback<>() {
+
+          @Override
+          public void onResponse(Call<Game> call, retrofit2.Response<Game> response) {
+            future.complete(response.body());
+          }
+
+          @Override
+          public void onFailure(Call<Game> call, Throwable throwable) {
+            future.completeExceptionally(throwable);
+
+          }
+        });
+    return future;
+  }
 
   @Override
   public CompletableFuture<Game> getGame(String gameID) {
