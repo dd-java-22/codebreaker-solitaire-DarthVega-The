@@ -6,8 +6,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import edu.cnm.deepdive.codebreaker.model.Game;
-import edu.cnm.deepdive.codebreaker.model.Guess;
-import edu.cnm.deepdive.codebreaker.service.DefaultApi;
+import edu.cnm.deepdive.codebreaker.service.CodebreakerApi;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import okhttp3.Interceptor;
@@ -46,12 +45,12 @@ public class Main {
         .addInterceptor(interceptor)
         .build();
 
-    DefaultApi api = new Retrofit.Builder()
+    CodebreakerApi api = new Retrofit.Builder()
         .baseUrl("https://ddc-java.services/codebreaker-solitaire/")
         .addConverterFactory(GsonConverterFactory.create(gson))
         .client(client)
         .build()
-        .create(DefaultApi.class);
+        .create(CodebreakerApi.class);
 
     Game game = new Game()
         .pool("ABCDE")
