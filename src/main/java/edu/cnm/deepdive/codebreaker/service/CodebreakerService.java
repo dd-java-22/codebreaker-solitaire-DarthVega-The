@@ -53,7 +53,12 @@ enum CodebreakerService implements AbstractCodebreakerService {
 
           @Override
           public void onResponse(Call<Game> call, retrofit2.Response<Game> response) {
-            future.complete(response.body());
+            if (response.isSuccessful()) {
+              future.complete(response.body());
+            } else {
+              // TODO: 2/9/2026 Make this specific to error types.
+              future.completeExceptionally(new IllegalArgumentException(response.message()));
+            }
           }
 
           @Override
