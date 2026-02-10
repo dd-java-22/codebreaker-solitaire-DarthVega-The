@@ -6,17 +6,18 @@ import java.util.concurrent.CompletableFuture;
 
 public interface CodebreakerService {
 
-  static CodebreakerService getInstance(){
+  static CodebreakerService getInstance() {
     return CodebreakerServiceImpl.getInstance();
   }
+
   CompletableFuture<Game> startGame(Game game);
 
-  CompletableFuture<Game> getGame(String gameID);
+  CompletableFuture<Game> getGame(String gameId);
 
-  CompletableFuture<Void> delete(String gameID);
+  CompletableFuture<Void> delete(String gameId);
 
-  CompletableFuture<Guess> submitGuess(String gameID, Guess guess);
+  CompletableFuture<Guess> submitGuess(Game game, Guess guess);
 
-  CompletableFuture<Guess> getGuess(String gameID, String guessID);
+  CompletableFuture<Guess> getGuess(String gameId, String guessId);
 
 }

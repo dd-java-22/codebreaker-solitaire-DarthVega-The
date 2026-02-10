@@ -28,6 +28,7 @@ public class GameViewModel {
     errorObservers = new LinkedList<>();
     solvedObservers = new LinkedList<>();
   }
+
   public static GameViewModel getInstance() {
     return Holder.INSTANCE;
   }
@@ -49,7 +50,7 @@ public class GameViewModel {
   private Throwable setError(Throwable error) {
     this.error = error;
     errorObservers
-        .forEach((Consumer<Throwable> consumer) -> consumer.accept(error));
+        .forEach((consumer) -> consumer.accept(error));
     return error;
   }
 
@@ -75,7 +76,7 @@ public class GameViewModel {
   public void getGame(String gameId) {
     service
         .getGame(gameId)
-        .thenApply((startedGame) -> setGame(startedGame).getSolved())
+        .thenApply((game) -> setGame(game).getSolved())
         .thenAccept(this::setSolved)
         .exceptionally(this::logError);
   }
@@ -91,7 +92,6 @@ public class GameViewModel {
         .delete(game.getId())
         .thenRun(() -> setGame(null))
         .exceptionally(this::logError);
-
   }
 
   public void submitGuess(String text) {
@@ -99,7 +99,7 @@ public class GameViewModel {
         .text(text)
         .build();
     service
-        .submitGuess(game.getId(), guess)
+        .submitGuess(game, guess)
         .thenApply(this::setGuess)
         .thenApply((receivedGuess) -> {
           setSolved(receivedGuess.getSolution());
@@ -119,8 +119,9 @@ public class GameViewModel {
         .getGuess(game.getId(), guessId)
         .thenAccept(this::setGuess)
         .exceptionally(this::logError);
-
   }
+
+// TODO: 2026-02-10 Add methods to get and delete game, submit and get guess.
 
   public void registerGameObserver(Consumer<Game> observer) {
     gameObservers.add(observer);
@@ -134,10 +135,9 @@ public class GameViewModel {
     errorObservers.add(observer);
   }
 
-  public void registeredSolvedObservers(Consumer<Boolean> observer) {
+  public void registerSolvedObserver(Consumer<Boolean> observer) {
     solvedObservers.add(observer);
   }
-
 
   private Void logError(Throwable error) {
     //noinspection ThrowableNotThrown
@@ -151,4 +151,5 @@ public class GameViewModel {
     static final GameViewModel INSTANCE = new GameViewModel();
 
   }
+
 }
