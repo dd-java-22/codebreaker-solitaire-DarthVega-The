@@ -60,17 +60,17 @@ public class GameViewModel {
   }
   //TODO: Add methods to get and delete game, submit and get guess
 
-public void getGame(String gameId) {
+  public void getGame(String gameId) {
     service.getGame(gameId)
         .thenAccept(this::setGame)
         .exceptionally(this::logError);
-}
+  }
 
-public void deleteGame(String gameId) {
+  public void deleteGame(String gameId) {
     service
         .delete(gameId)
         .exceptionally(this::logError);
-}
+  }
 
   public void deleteGame() {
     service
@@ -94,9 +94,18 @@ public void deleteGame(String gameId) {
         .exceptionally(this::logError);
   }
 
+  public void getGuess(String guessId) {
+    service
+        .getGuess(game.getId(), guessId)
+        .thenAccept(this::setGuess)
+        .exceptionally(this::logError);
+
+  }
+
   public void registerGameObserver(Consumer<Game> observer) {
     gameObservers.add(observer);
   }
+
   public void registerGuessObserver(Consumer<Guess> observer) {
     guessObservers.add(observer);
   }
