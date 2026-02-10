@@ -14,16 +14,22 @@ public class GameViewModel {
   private final List<Consumer<Game>> gameObservers;
   private final List<Consumer<Guess>> guessObservers;
   private final List<Consumer<Throwable>> errorObservers;
+  private final List<Consumer<Boolean>> solvedObservers;
 
   private Game game;
   private Guess guess;
   private Throwable error;
+  private Boolean solved;
 
-  public GameViewModel() {
+  private GameViewModel() {
     service = CodebreakerService.getInstance();
     gameObservers = new LinkedList<>();
     guessObservers = new LinkedList<>();
     errorObservers = new LinkedList<>();
+    solvedObservers = new LinkedList<>();
+  }
+  public static GameViewModel getInstance() {
+    return Holder.INSTANCE;
   }
 
   private Game setGame(Game game) {
@@ -47,7 +53,13 @@ public class GameViewModel {
     return error;
   }
 
-  // TODO: 2026-02-10 Add game methods.
+  private Boolean setSolved(Boolean solved) {
+    this.solved = solved;
+    solvedObservers
+        .forEach((consumer) -> consumer.accept(solved));
+    return solved;
+  }
+
   public void startGame(String pool, int length) {
     Game game = new Game.Builder()
         .pool(pool)
@@ -55,14 +67,16 @@ public class GameViewModel {
         .build();
     service
         .startGame(game)
-        .thenAccept(this::setGame)
+        .thenApply((startedGame) -> setGame(startedGame).getSolved())
+        .thenAccept(this::setSolved)
         .exceptionally(this::logError);
   }
-  //TODO: Add methods to get and delete game, submit and get guess
 
   public void getGame(String gameId) {
-    service.getGame(gameId)
-        .thenAccept(this::setGame)
+    service
+        .getGame(gameId)
+        .thenApply((startedGame) -> setGame(startedGame).getSolved())
+        .thenAccept(this::setSolved)
         .exceptionally(this::logError);
   }
 
@@ -86,11 +100,17 @@ public class GameViewModel {
         .build();
     service
         .submitGuess(game.getId(), guess)
-        .thenAccept((Guess guessResponse) -> {
-          //noinspection DataFlowIssue
-          game.getGuesses().add(setGuess(guessResponse));
-          setGame(game);
+        .thenApply(this::setGuess)
+        .thenApply((receivedGuess) -> {
+          setSolved(receivedGuess.getSolution());
+          return receivedGuess;
         })
+        .thenApply((guessResponse) -> {
+          //noinspection DataFlowIssue
+          game.getGuesses().add(guessResponse);
+          return game;
+        })
+        .thenAccept(this::setGame)
         .exceptionally(this::logError);
   }
 
@@ -114,6 +134,10 @@ public class GameViewModel {
     errorObservers.add(observer);
   }
 
+  public void registeredSolvedObservers(Consumer<Boolean> observer) {
+    solvedObservers.add(observer);
+  }
+
 
   private Void logError(Throwable error) {
     //noinspection ThrowableNotThrown
@@ -122,4 +146,9 @@ public class GameViewModel {
     return null;
   }
 
+  private static class Holder {
+
+    static final GameViewModel INSTANCE = new GameViewModel();
+
+  }
 }
