@@ -145,32 +145,37 @@ class CodebreakerServiceImpl implements CodebreakerService {
     if (guess.getText().length() == game.getLength()) {
       future = new CompletableFuture<>();
       api.submitGuess(game.getId(), guess)
-          .enqueue(new Callback<Guess>() {
-            @Override
-            public void onResponse(Call<Guess> call, Response<Guess> response) {
-              if (response.isSuccessful()) {
-                future.complete(response.body());
-              } else {
-                switch (response.code()) {
-                  case 400 -> future.completeExceptionally(
-                      new IllegalArgumentException("Invalid guess content!"));
-                  case 404 -> future.completeExceptionally(
-                      new IllegalArgumentException("Game not found!"));
-                  default -> future.completeExceptionally(
-                      new IllegalArgumentException("Unknown error!"));
-                }
-              }
-            }
-
-            @Override
-            public void onFailure(Call<Guess> call, Throwable t) {
-              future.completeExceptionally(t);
-            }
-          });
+          .enqueue(getGuessCallback(future));
     } else {
       future = CompletableFuture.failedFuture(new IllegalArgumentException());
     }
     return future;
+  }
+
+  @NotNull
+  private static Callback<Guess> getGuessCallback(CompletableFuture<Guess> future) {
+    return new Callback<Guess>() {
+      @Override
+      public void onResponse(Call<Guess> call, Response<Guess> response) {
+        if (response.isSuccessful()) {
+          future.complete(response.body());
+        } else {
+          switch (response.code()) {
+            case 400 -> future.completeExceptionally(
+                new IllegalArgumentException("Invalid guess content!"));
+            case 404 -> future.completeExceptionally(
+                new IllegalArgumentException("Game not found!"));
+            default -> future.completeExceptionally(
+                new IllegalArgumentException("Unknown error!"));
+          }
+        }
+      }
+
+      @Override
+      public void onFailure(Call<Guess> call, Throwable t) {
+        future.completeExceptionally(t);
+      }
+    };
   }
 
   @Override
