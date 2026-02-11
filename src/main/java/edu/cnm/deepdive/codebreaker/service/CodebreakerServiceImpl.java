@@ -106,27 +106,32 @@ class CodebreakerServiceImpl implements CodebreakerService {
   public CompletableFuture<Guess> getGuess(String gameId, String guessId) {
     CompletableFuture<Guess> future = new CompletableFuture<>();
     api.getGuess(gameId, guessId)
-        .enqueue(new Callback<Guess>() {
-          @Override
-          public void onResponse(Call<Guess> call, Response<Guess> response) {
-            if (response.isSuccessful()) {
-              future.complete(response.body());
-            } else {
-              switch (response.code()) {
-                case 404 -> future.completeExceptionally(
-                    new IllegalArgumentException("Game or guess not found!"));
-                default -> future.completeExceptionally(
-                    new IllegalArgumentException("Unknown error!"));
-              }
-            }
-          }
-
-          @Override
-          public void onFailure(Call<Guess> call, Throwable t) {
-
-          }
-        });
+        .enqueue(getCallback1(future));
     return future;
+  }
+
+  @NotNull
+  private static Callback<Guess> getCallback1(CompletableFuture<Guess> future) {
+    return new Callback<Guess>() {
+      @Override
+      public void onResponse(Call<Guess> call, Response<Guess> response) {
+        if (response.isSuccessful()) {
+          future.complete(response.body());
+        } else {
+          switch (response.code()) {
+            case 404 -> future.completeExceptionally(
+                new IllegalArgumentException("Game or guess not found!"));
+            default -> future.completeExceptionally(
+                new IllegalArgumentException("Unknown error!"));
+          }
+        }
+      }
+
+      @Override
+      public void onFailure(Call<Guess> call, Throwable t) {
+
+      }
+    };
   }
 
   @NotNull
