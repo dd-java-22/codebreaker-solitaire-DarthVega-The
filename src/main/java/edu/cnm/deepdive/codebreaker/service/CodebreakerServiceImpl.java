@@ -63,11 +63,21 @@ class CodebreakerServiceImpl implements CodebreakerService {
   }
 
   @Override
-  public CompletableFuture<Game> getGame(String gameId) {
-    CompletableFuture<Game> future = new CompletableFuture<>();
-    api
-        .getGame(gameId)
-        .enqueue(new Callback<>() {
+  public CompletableFuture<Game> getGame(Game game) {
+    return isValidGame(game)
+        ? buildStartGameFuture(game)
+        : CompletableFuture.failedFuture(new IllegalArgumentException());
+  }
+
+    @NotNull
+        private CompletableFuture<Game> buildStartGameFuture(Game game) {
+      CompletableFuture<Game> future = new CompletableFuture<>();
+      api
+          .getGame(game)
+          .enqueue(new getGameCallback(future));
+      return future
+    }
+
           @Override
           public void onResponse(Call<Game> call, Response<Game> response) {
             if (response.isSuccessful()) {
