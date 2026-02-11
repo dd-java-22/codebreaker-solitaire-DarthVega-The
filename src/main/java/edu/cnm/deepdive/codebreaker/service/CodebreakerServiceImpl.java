@@ -54,8 +54,27 @@ class CodebreakerServiceImpl implements CodebreakerService {
     CompletableFuture<Game> future = new CompletableFuture<>();
     api
         .startGame(game)
-        .enqueue(new StartGameCallback(future));
+        .enqueue(getCallback(future));
     return future;
+  }
+
+  @NotNull
+  private static Callback<Game> getCallback(CompletableFuture<Game> future) {
+    return new Callback<>() {
+      @Override
+      public void onResponse(Call<Game> call, Response<Game> response) {
+        if (response.isSuccessful()) {
+          future.complete(response.body());
+        } else {
+          future.completeExceptionally(new IllegalArgumentException(response.message()));
+        }
+      }
+
+      @Override
+      public void onFailure(Call<Game> call, Throwable throwable) {
+        future.completeExceptionally(throwable);
+      }
+    };
   }
 
   private static boolean isValidGame(Game game) {
@@ -63,21 +82,11 @@ class CodebreakerServiceImpl implements CodebreakerService {
   }
 
   @Override
-  public CompletableFuture<Game> getGame(Game game) {
-    return isValidGame(game)
-        ? buildStartGameFuture(game)
-        : CompletableFuture.failedFuture(new IllegalArgumentException());
-  }
-
-    @NotNull
-        private CompletableFuture<Game> buildStartGameFuture(Game game) {
-      CompletableFuture<Game> future = new CompletableFuture<>();
-      api
-          .getGame(game)
-          .enqueue(new getGameCallback(future));
-      return future
-    }
-
+  public CompletableFuture<Game> getGame(String gameId) {
+    CompletableFuture<Game> future = new CompletableFuture<>();
+    api
+        .getGame(gameId)
+        .enqueue(new Callback<>() {
           @Override
           public void onResponse(Call<Game> call, Response<Game> response) {
             if (response.isSuccessful()) {
@@ -235,26 +244,4 @@ class CodebreakerServiceImpl implements CodebreakerService {
 
   }
 
-  private static class StartGameCallback implements Callback<Game> {
-
-    private final CompletableFuture<Game> future;
-
-    public StartGameCallback(CompletableFuture<Game> future) {
-      this.future = future;
-    }
-
-    @Override
-    public void onResponse(Call<Game> call, Response<Game> response) {
-      if (response.isSuccessful()) {
-        future.complete(response.body());
-      } else {
-        future.completeExceptionally(new IllegalArgumentException(response.message()));
-      }
-    }
-
-    @Override
-    public void onFailure(Call<Game> call, Throwable throwable) {
-      future.completeExceptionally(throwable);
-    }
-  }
 }
