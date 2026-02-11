@@ -86,23 +86,28 @@ class CodebreakerServiceImpl implements CodebreakerService {
     CompletableFuture<Game> future = new CompletableFuture<>();
     api
         .getGame(gameId)
-        .enqueue(new Callback<>() {
-          @Override
-          public void onResponse(Call<Game> call, Response<Game> response) {
-            if (response.isSuccessful()) {
-              future.complete(response.body());
-            } else {
-              future.completeExceptionally(
-                  new IllegalArgumentException("Specified game doesn't exist!"));
-            }
-          }
-
-          @Override
-          public void onFailure(Call<Game> call, Throwable t) {
-            future.completeExceptionally(t);
-          }
-        });
+        .enqueue(getGameCallback(future));
     return future;
+  }
+
+  @NotNull
+  private static Callback<Game> getGameCallback(CompletableFuture<Game> future) {
+    return new Callback<>() {
+      @Override
+      public void onResponse(Call<Game> call, Response<Game> response) {
+        if (response.isSuccessful()) {
+          future.complete(response.body());
+        } else {
+          future.completeExceptionally(
+              new IllegalArgumentException("Specified game doesn't exist!"));
+        }
+      }
+
+      @Override
+      public void onFailure(Call<Game> call, Throwable t) {
+        future.completeExceptionally(t);
+      }
+    };
   }
 
   @Override
@@ -110,23 +115,28 @@ class CodebreakerServiceImpl implements CodebreakerService {
     CompletableFuture<Void> future = new CompletableFuture<>();
     api
         .deleteGame(gameId)
-        .enqueue(new Callback<>() {
-          @Override
-          public void onResponse(Call<Void> call, Response<Void> response) {
-            if (response.isSuccessful()) {
-              future.complete(null);
-            } else {
-              future.completeExceptionally(
-                  new IllegalArgumentException("Specified game doesn't exist!"));
-            }
-          }
-
-          @Override
-          public void onFailure(Call<Void> call, Throwable t) {
-            future.completeExceptionally(t);
-          }
-        });
+        .enqueue(getVoidCallback(future));
     return future;
+  }
+
+  @NotNull
+  private static Callback<Void> getVoidCallback(CompletableFuture<Void> future) {
+    return new Callback<>() {
+      @Override
+      public void onResponse(Call<Void> call, Response<Void> response) {
+        if (response.isSuccessful()) {
+          future.complete(null);
+        } else {
+          future.completeExceptionally(
+              new IllegalArgumentException("Specified game doesn't exist!"));
+        }
+      }
+
+      @Override
+      public void onFailure(Call<Void> call, Throwable t) {
+        future.completeExceptionally(t);
+      }
+    };
   }
 
   @Override
