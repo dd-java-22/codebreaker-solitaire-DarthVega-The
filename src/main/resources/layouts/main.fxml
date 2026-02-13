@@ -9,24 +9,25 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.image.Image?>
 <GridPane
   xmlns:fx="http://javafx.com/fxml"
   stylesheets="@../styles/styles.css"
   xmlns="http://javafx.com/javafx"
   fx:controller="edu.cnm.deepdive.codebreaker.controller.MainController">
 
-  <Button onAction="#submitGuess"
-    fx:id="send">
-    GridPane.columnIndex="0"
-    GridPane.rowIndex="1"/>
-
+  <Button GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#submitGuess" fx:id="send">
     <graphic>
 
       <ImageView
         fitHeight="24"
         fitWidth="24"
-        image="@../images/send.png"
-        pickOnBounds="true"/>
+        pickOnBounds="true">
+
+        <Image
+          url="@../images/send.png"/>
+
+      </ImageView>
 
     </graphic>
   </Button>
@@ -46,7 +47,6 @@
   </ScrollPane>
 
 
-  <!--suppress JavaFxRedundantPropertyValue -->
   <TextField
     GridPane.columnIndex="0"
     GridPane.rowIndex="1"
@@ -58,6 +58,8 @@
     <ColumnConstraints hgrow="NEVER" prefWidth="50"/>
   </columnConstraints>
 
+
+  <!--suppress JavaFxRedundantPropertyValue -->
   <rowConstraints>
     <RowConstraints minHeight="10" vgrow="ALWAYS"/>
     <RowConstraints prefHeight="50" vgrow="NEVER"/>
