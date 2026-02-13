@@ -15,7 +15,7 @@ public class JavaFxMain extends Application {
   public void start(Stage stage) throws Exception {
     ClassLoader classLoader = getClass().getClassLoader();
     stage.setTitle("Codebreaker");
-    FXMLLoader fxmlLoader = new FXMLLoader(classLoader.getResource("Layouts/hello.fxml"));
+    FXMLLoader fxmlLoader = new FXMLLoader(classLoader.getResource("Layouts/main.fxml"));
     Scene scene = new Scene(fxmlLoader.load());
     stage.setScene(scene);
     stage.show();
