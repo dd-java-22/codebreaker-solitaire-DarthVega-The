@@ -1,5 +1,6 @@
 package edu.cnm.deepdive.codebreaker;
 
+import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -7,19 +8,20 @@ import javafx.stage.Stage;
 
 public class JavaFxMain extends Application {
 
-  void main(String[] args) {
+  static void main(String[] args) {
     launch(args);
   }
 
   @Override
   public void start(Stage stage) throws Exception {
+    ResourceBundle bundle = ResourceBundle.getBundle("strings");
     ClassLoader classLoader = getClass().getClassLoader();
-    stage.setTitle("Codebreaker");
-    FXMLLoader fxmlLoader = new FXMLLoader(classLoader.getResource("Layouts/main.fxml"));
+    stage.setTitle(bundle.getString("window_title"));
+    FXMLLoader fxmlLoader =
+        new FXMLLoader(classLoader.getResource("layouts/main.fxml"), bundle);
     Scene scene = new Scene(fxmlLoader.load());
     stage.setScene(scene);
     stage.show();
-
   }
 
 }

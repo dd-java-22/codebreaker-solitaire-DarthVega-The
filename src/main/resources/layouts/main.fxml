@@ -3,20 +3,28 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
-<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.control.Tooltip?>
 <GridPane
   xmlns:fx="http://javafx.com/fxml"
   stylesheets="@../styles/styles.css"
   xmlns="http://javafx.com/javafx"
   fx:controller="edu.cnm.deepdive.codebreaker.controller.MainController">
 
-  <Button GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#submitGuess" fx:id="send">
+  <Button
+    GridPane.columnIndex="1"
+    GridPane.rowIndex="1"
+    onAction="#submitGuess"
+    fx:id="send">
+
+
     <graphic>
 
       <ImageView
@@ -30,6 +38,11 @@
       </ImageView>
 
     </graphic>
+
+    <tooltip>
+      <Tooltip text="%send_tooltip"/>
+    </tooltip>
+
   </Button>
 
   <ScrollPane
@@ -40,30 +53,27 @@
     vbarPolicy="AS_NEEDED"
     fx:id="scrollPane">
 
-    <TextFlow fx:id="textFlow">
+    <TextFlow
+      fx:id="textFlow">
       <Text fx:id="gameState"/>
     </TextFlow>
 
   </ScrollPane>
 
-
-  <TextField
+  <!--suppress JavaFxRedundantPropertyValue -->
+  <TilePane
     GridPane.columnIndex="0"
     GridPane.rowIndex="1"
-    promptText="Enter guess ..."
-    fx:id="guessInput"/>
+    fx:id="guessPalette"/>
 
   <columnConstraints>
     <ColumnConstraints hgrow="ALWAYS" minWidth="10"/>
-    <ColumnConstraints hgrow="NEVER" prefWidth="50"/>
+    <ColumnConstraints hgrow="NEVER" minWidth="50"/>
   </columnConstraints>
 
-
-  <!--suppress JavaFxRedundantPropertyValue -->
   <rowConstraints>
     <RowConstraints minHeight="10" vgrow="ALWAYS"/>
-    <RowConstraints prefHeight="50" vgrow="NEVER"/>
+    <RowConstraints minHeight="50" vgrow="NEVER"/>
   </rowConstraints>
-
 
 </GridPane>

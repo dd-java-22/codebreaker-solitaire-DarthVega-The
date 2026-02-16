@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Text?>
+
+<Button xmlns:fx="http://javafx.com/fxml"
+  styleClass="palette-button"
+  stylesheets="@../styles/styles.css"
+  xmlns="http://javafx.com/javafx">
+
+  <Circle
+    radius="15"
+    fx:id="paletteButtonCircle"/>
+
+
+</Button>
