@@ -4,6 +4,9 @@ import edu.cnm.deepdive.codebreaker.model.Game;
 import edu.cnm.deepdive.codebreaker.viewmodel.GameViewModel;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -23,6 +26,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
+
 public class MainController {
 
   private static final String PROPERTIES_FILE = "game.properties";
@@ -31,7 +35,7 @@ public class MainController {
   private static final Pattern PROPERTY_LIST_DELIMITER = Pattern.compile("\\s*,\\s*");
 
   @FXML
-  private ResourceBundle resource;
+  private ResourceBundle resources;
   @FXML
   private ScrollPane scrollPane;
   @FXML
@@ -45,6 +49,8 @@ public class MainController {
 
   private GameViewModel viewModel;
   private Game game;
+  private Map<Integer, String> codePointNames;
+  private Map<Integer, String> codePointClasses;
 
   private class GuessFilter implements UnaryOperator<TextFormatter.Change> {
 
@@ -90,14 +96,31 @@ public class MainController {
         .codePoints()
         .boxed()
         .toList();
-    List<String> poolNames = PROPERTY_LIST_DELIMITER
-        .splitAsStream(resources.getString("pool_names"))
+    List<String> poolNames = buildPoolMap("pool_names");
+    List<String> poolClasses = buildPoolMap("pool_classes");
+
+    codePointNames = new LinkedHashMap<>();
+    codePointClasses = new LinkedHashMap<>();
+
+    Iterator<Integer> codePointIter = poolCodePoints.iterator();
+    Iterator<String> nameIter = poolNames.iterator();
+    Iterator<String> classIter = poolClasses.iterator();
+
+    while (codePointIter.hasNext() && nameIter.hasNext() && classIter.hasNext()) {
+      Integer codePoint = codePointIter.next();
+      codePointNames.put(codePoint, nameIter.next());
+      codePointClasses.put(codePoint, classIter.next());
+    }
+
+    viewModel = connectToViewModel();
+    startGame();
+  }
+
+  private List<String> buildPoolMap(String key) {
+    return PROPERTY_LIST_DELIMITER
+        .splitAsStream(resources.getString(key))
         .filter(Predicate.not(String::isEmpty))
         .toList();
-
-    Map<Integer, String> poolNames =
-        viewModel = connectToViewModel();
-    startGame();
   }
 
   @FXML
