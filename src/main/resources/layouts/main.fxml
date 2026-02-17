@@ -61,9 +61,14 @@
   <!--suppress JavaFxRedundantPropertyValue -->
   <TilePane
     GridPane.columnIndex="0"
+    GridPane.rowIndex="1"
+    fx:id="guessContainer"/>
+
+  <TilePane
+    GridPane.columnIndex="0"
     GridPane.rowIndex="2"
-    orientation="HORIZONTAL"
     fx:id="guessPalette"/>
+
 
   <columnConstraints>
     <ColumnConstraints hgrow="ALWAYS" minWidth="10"/>
@@ -75,6 +80,5 @@
     <RowConstraints minHeight="50" vgrow="NEVER"/>
     <RowConstraints minHeight="32" vgrow="NEVER"/>
   </rowConstraints>
-
 
 </GridPane>
