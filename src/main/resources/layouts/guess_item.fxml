@@ -8,8 +8,10 @@
 
 <RadioButton
   xmlns:fx="http://javafx.com/fxml"
-  styleClass="guess-item"
   stylesheets="@../styles/styles.css"
   xmlns="http://javafx.com/javafx">
 
+  <graphic>
+    <Region styleClass="graphic-region"/>
+  </graphic>
 </RadioButton>
