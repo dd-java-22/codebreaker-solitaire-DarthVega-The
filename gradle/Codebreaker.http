@@ -3,15 +3,18 @@ POST https://ddc-java.services/codebreaker-solitaire/games
 Content-Type: application/json
 
 {
-"pool" : "ABCDE",
-"length" : 2
+  "pool": "ABCDE",
+  "length": 2
 }
+
 ###
 ### POST a guess
 POST https://ddc-java.services/codebreaker-solitaire/games/CtYHopI3TUS3RHJNaa3mKg/guesses
 Content-Type: application/json
 
-{"text": "CB" }
+{
+  "text": "CB"
+}
 
 ### Get athe game status
 GET https://ddc-java.services/codebreaker-solitaire/games/CtYHopI3TUS3RHJNaa3mKg
