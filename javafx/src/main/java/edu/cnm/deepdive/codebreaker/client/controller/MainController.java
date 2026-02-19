@@ -28,6 +28,7 @@ import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
+import javafx.beans.binding.StringBinding;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -107,7 +108,15 @@ public class MainController {
    */
   @FXML
   protected void submitGuess() {
-    // TODO: Build guess text from codepoints in group, invoke viewModel.submitGuess(text).
+
+    String guessText = group
+        .getToggles()
+        .stream()
+        .map((toggle) -> (ToggleButton) toggle)
+        .map((button) -> (Integer) button.getUserData())
+        .reduce(new StringBuilder(), StringBuilder::appendCodePoint, StringBuilder::append)
+        .toString();
+    viewModel.submitGuess(guessText);
   }
 
   private void loadGameProperties() {

@@ -147,6 +147,9 @@ GridPane {
 #guessContainer .radio-button.red-fill ,
 #guessPalette .button.red-fill {
   -fx-text-fill: white;
+  /*what colors should the text be for each color/*
+  
+   */
 }
 
 /* TODO: Define text fills for the other colors, as the above does for .red-fill. */
