@@ -118,21 +118,34 @@ public class MainController {
 
   private void handleGame(Game game) {
     this.game = game;
-    gameState.setText(game.toString());
-
+    gameState.setText(game.toString()); // FIXME: 2026-02-18 Remove and replace with list view.
     buildPalette();
+    buildGuess();
+    updateSend();
+  }
 
-    ObservableList<Node> children = guessContainer.getChildren();
-    children.clear();
+  private void buildGuess() {
     group = new ToggleGroup();
-    ObservableList<Toggle> toggles = group.getToggles();
-    int[] lastGuess = game.getGuesses().isEmpty()
-        ? new int[this.game.getLength()]
-        : game.getGuesses()
+    initializeGuess(getLastGuess());
+    selectGuessItem(group.getToggles().getFirst());
+  }
+
+  private int[] getLastGuess() {
+    //noinspection DataFlowIssue
+    return game.getGuesses().isEmpty()
+        ? new int[game.getLength()]
+        : game
+            .getGuesses()
             .getLast()
             .getText()
             .codePoints()
             .toArray();
+  }
+
+  private void initializeGuess(int[] lastGuess) {
+    ObservableList<Toggle> toggles = group.getToggles();
+    ObservableList<Node> children = guessContainer.getChildren();
+    children.clear();
     IntStream.range(0, game.getLength())
         .forEach((i) -> {
           try {
@@ -148,12 +161,31 @@ public class MainController {
             throw new RuntimeException(e);
           }
         });
+  }
 
+  private void selectGuessItem(Toggle toggle) {
+    ToggleButton firstButton = (ToggleButton) toggle;
+    group.selectToggle(firstButton);
+    firstButton.requestFocus();
   }
 
   private void buildPalette() {
-    EventHandler<ActionEvent> handler = (event) ->
-        System.out.println(((Node) event.getSource()).getUserData());
+    EventHandler<ActionEvent> handler = (event) -> {
+      Integer codePoint = (Integer) ((Node) event.getSource()).getUserData();
+      ToggleButton button = (ToggleButton) group.getSelectedToggle();
+      button.setUserData(codePoint);
+      ObservableList<String> styleClasses = button.getStyleClass();
+      styleClasses.subList(1, styleClasses.size()).clear();
+      styleClasses.add(codePointClasses.get(codePoint));
+      ObservableList<Toggle> toggles = group.getToggles();
+      int position = toggles.indexOf(button);
+      if (position < toggles.size() - 1) {
+        selectGuessItem(toggles.get(position + 1));
+      } else {
+        button.requestFocus();
+      }
+      updateSend();
+    };
     ObservableList<Node> children = guessPalette.getChildren();
     children.clear();
     codePointClasses
@@ -175,6 +207,14 @@ public class MainController {
           }
         })
         .forEach(children::add);
+  }
+
+  private void updateSend() {
+    boolean sendDisabled = group
+        .getToggles()
+        .stream()
+        .anyMatch((toggle) -> ((ToggleButton) toggle).getUserData() == null);
+    send.setDisable(sendDisabled);
   }
 
   private URL getItemUrl(String itemPath) {
