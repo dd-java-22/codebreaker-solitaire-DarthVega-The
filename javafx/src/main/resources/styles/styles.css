@@ -260,3 +260,12 @@ GridPane.root {
   -fx-font-weight: bold;
   -fx-font-size: 14px;
 }
+
+#newGame .new-game {
+  -fx-min-height: 24px;
+  -fx-min-width: 24px;
+  -fx-border-color: #404040;
+  -fx-border-width: 1px;
+  -fx-background-color: transparent;
+  -fx-shape: ;
+}
