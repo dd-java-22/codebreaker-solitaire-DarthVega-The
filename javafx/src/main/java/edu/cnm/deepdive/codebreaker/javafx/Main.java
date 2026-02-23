@@ -13,10 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package edu.cnm.deepdive.codebreaker.client;
+package edu.cnm.deepdive.codebreaker.javafx;
 
-import edu.cnm.deepdive.codebreaker.client.controller.MainController;
-import edu.cnm.deepdive.codebreaker.client.util.Constants;
+import edu.cnm.deepdive.codebreaker.javafx.controller.Stoppable;
+import edu.cnm.deepdive.codebreaker.javafx.util.Constants;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Application;
@@ -38,18 +38,25 @@ public class Main extends Application {
     launch(args);
   }
 
-  private MainController controller;
+  private Stoppable controller;
 
   @Override
   public void start(Stage stage) throws Exception {
     ResourceBundle bundle = ResourceBundle.getBundle(Constants.BUNDLE_BASE_NAME);
     stage.setTitle(bundle.getString(WINDOW_TITLE_KEY));
+    stage.setResizable(false);
     URL location = getClass().getResource(bundle.getString(MAIN_LAYOUT_KEY));
     FXMLLoader fxmlLoader = new FXMLLoader(location, bundle);
     Scene scene = new Scene(fxmlLoader.load());
     controller = fxmlLoader.getController();
     stage.setScene(scene);
     stage.show();
+  }
+
+  @Override
+  public void stop() throws Exception {
+    controller.shutdown();
+    super.stop();
   }
 
   // TODO: 2026-02-19 Override stop() and invoke shutdown.
