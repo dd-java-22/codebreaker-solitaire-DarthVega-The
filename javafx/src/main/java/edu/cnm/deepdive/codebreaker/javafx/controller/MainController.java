@@ -142,7 +142,7 @@ public class MainController implements Stoppable {
     guessHistory.getItems().clear();
     //noinspection DataFlowIssue
     guessHistory.getItems().addAll(game.getGuesses());
-    Platform.runLater(() -> guessHistory.scrollTo(Integer.MAX_VALUE));
+    Platform.runLater(() -> guessHistory.scrollTo(game.getGuesses().size() -1));
   }
 
   private void buildPalette() {
@@ -161,7 +161,8 @@ public class MainController implements Stoppable {
   }
 
   private void updateSend() {
-    boolean sendDisabled = group
+    boolean sendDisabled = Boolean.TRUE.equals(game.getSolved())
+        || group
         .getToggles()
         .stream()
         .anyMatch((toggle) -> ((ToggleButton) toggle).getUserData() == null);
