@@ -24,7 +24,7 @@ interface CodebreakerService {
      * @param gameId The unique identifier of the game to be retrieved.
      * @return A [CompletableFuture] that will complete with the retrieved [Game] object.
      */
-    fun getGame(gameId: String?): CompletableFuture<Game>
+    fun getGame(gameId: String): CompletableFuture<Game>
 
     /**
      * Deletes the game with the specified ID.
