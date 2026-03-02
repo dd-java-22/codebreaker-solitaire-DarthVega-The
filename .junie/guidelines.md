@@ -1,4 +1,39 @@
-# Guidelines
+# Cascading Guidelines Bootstrap
+
+To ensure consistent behavior and adherence to project-specific and organizational standards, you (Junie) must aggregate and apply guidelines from multiple levels of the directory structure.
+
+### Guideline Discovery & Aggregation
+
+Before processing any request, you must check for the existence of `guidelines.md` files in the following locations, relative to the current project directory (let's call it `.`):
+1.  `./.junie/guidelines.md` (Current project)
+2.  `../.junie/guidelines.md` (One level up)
+3.  `../../.junie/guidelines.md` (Two levels up)
+
+**Note:** The search must not exceed two steps towards the filesystem root from the current project directory. If the root is reached on step 2, or if you have insufficient permissions to read the `..` directory in step 2, do not continue to step 3.
+
+### Precedence and Conflict Resolution
+
+When guidelines are aggregated from multiple levels, the following precedence logic applies:
+
+*   Rules in the current project (`./.junie/guidelines.md`) take highest precedence.
+
+*   Rules in the immediate parent (`../.junie/guidelines.md`) take precedence over those in the grandparent (`../../.junie/guidelines.md`).
+
+#### Conflict Handling
+
+*   **Brave Mode**
+
+    If you are in **Brave mode**, you must automatically apply the precedence logic described above to resolve any contradictions between rules.
+
+* **Non-Brave Mode**
+
+  If you detect a contradiction between rules from different levels when *not* in Brave mode, you **must** pause and ask the user:
+
+  > "I have detected conflicting rules in the cascading guidelines. Would you like me to apply the standard precedence logic for all conflicts related to this request, or would you prefer to resolve them individually?"
+
+### Responsibility
+
+While you should attempt to identify obvious contradictions (e.g., "Use tabs" vs. "Use spaces"), the user is responsible for the granularity and clarity of the rules provided at each level. If a rule is ambiguous, seek clarification as per standard operating procedures.
 
 ## Version control
 
@@ -9,7 +44,7 @@ Whenever your execution plan, in response to a prompt from me, requires **you** 
 1. Before executing the plan, execute `git add` and `git commit` on the set of uncommitted changes (as discovered by `git status`), using this format for the commit message (note the blank line separating the first line from the rest of the message):
 
     > Commit by Junie: {short summary}
-    > 
+    >
     > {long summary}
 
     - Replace {short summary} with a generated abbreviated summary of the changes, limited so that the total length of the first line does not exceed 72 characters.
@@ -23,10 +58,10 @@ Whenever your execution plan, in response to a prompt from me, requires **you** 
 3. **If the changes are within a Git repository**, commit the changes made by you, using this format for the commit message (note the blank lines separating message components):
 
     > Change by Junie: {short summary}
-    > 
+    >
     > {long summary}
-    > 
-    > Prompt: {prompt} 
+    >
+    > Prompt: {prompt}
 
     - Replace {short summary} with a generated abbreviated summary of the changes, limited so that the total length of the first line does not exceed 72 characters.
 
