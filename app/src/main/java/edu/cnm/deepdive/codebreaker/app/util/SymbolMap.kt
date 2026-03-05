@@ -1,6 +1,7 @@
 package edu.cnm.deepdive.codebreaker.app.util
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
@@ -12,32 +13,24 @@ class SymbolMap @Inject constructor(
     @param:ActivityContext private val context: Context
 ) {
 
-    private val mapping: MutableMap<Int, SymbolAttributes> = mutableMapOf()
+    private val mapping: Map<Int, SymbolAttributes>
 
     init {
-        val names = context.resources.getStringArray(R.array.color_names)
-        val valuesTyped = context.resources.obtainTypedArray(R.array.color_values)
-        val values = mutableListOf<Int>()
-        for (i in 0 until valuesTyped.length()) {
-            val color = valuesTyped.getColor(i, Color.TRANSPARENT)
-            values.add(color)
+        val resource = context.resources
+        val names = resource.getStringArray(R.array.color_names)
+        val keys = resource.getStringArray(R.array.color_keys)
+        val values = resource.obtainTypedArray(R.array.color_values).use { arrayOfInts(it) }
+        val drawables = resource.getIntArray(R.array.color_drawables).map {
+            ContextCompat.getDrawable(context, it)!!
+        }
 
-        }
-        val colorKeys = context.resources.getStringArray(R.array.color_keys)
-        val drawableIds = context.resources.getIntArray(R.array.color_drawables)
-        val drawables = mutableListOf<Drawable>()
-        for (i in drawableIds.indices) {
-            val drawable = ContextCompat.getDrawable(context, drawableIds[i])!!
-            drawables.add(drawable)
-        }
-        colorKeys.indices.forEach { i ->
-            val key = colorKeys[i]
-            val name = names[i]
-            val value = values[i]
-            val drawable = drawables[i]
-            mapping[key.codePointAt(0)] = SymbolAttributes(value, name, drawable)
+        mapping = keys.indices.associate { i ->
+            keys[i].codePointAt(0) to SymbolAttributes(values[i], names[i], drawables[i])
         }
     }
+
+    private fun arrayOfInts(array: TypedArray): IntArray =
+        IntArray(array.length()) { array.getColor(it, Color.TRANSPARENT) }
 
     private data class SymbolAttributes(
         val value: Int,
