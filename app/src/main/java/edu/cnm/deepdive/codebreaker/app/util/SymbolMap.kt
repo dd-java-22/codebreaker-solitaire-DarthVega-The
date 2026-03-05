@@ -29,6 +29,14 @@ class SymbolMap @Inject constructor(
         }
     }
 
+    fun getKeys(): List<Int> = mapping.keys.toList()
+
+    fun getColor(key: Int): Int = mapping[key]!!.value
+
+    fun getName(key: Int): String = mapping[key]!!.name
+
+    fun getDrawable(key: Int): Drawable = mapping[key]!!.drawable
+
     private fun arrayOfInts(array: TypedArray): IntArray =
         IntArray(array.length()) { array.getColor(it, Color.TRANSPARENT) }
 
