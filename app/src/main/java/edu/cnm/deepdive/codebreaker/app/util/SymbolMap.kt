@@ -4,8 +4,16 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ActivityContext
 import javax.inject.Inject
 
-class ColorUtility @Inject constructor(
-    @ActivityContext private val context: Context
+class SymbolMap @Inject constructor(
+    @param:ActivityContext private val context: Context
 ) {
-    // Utility methods can be added here
+
+    init {
+
+    }
+
+
+// Utility methods can be added here
+
+
 }

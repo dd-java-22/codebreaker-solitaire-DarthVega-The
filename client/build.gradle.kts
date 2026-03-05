@@ -16,7 +16,7 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    kotlin("jvm")
+    kotlin("jvm").version(libs.versions.kotlin.get())
     jacoco
 }
 
