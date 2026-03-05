@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Locale
 import java.util.Properties
@@ -74,16 +75,9 @@ android {
         sourceCompatibility = JavaVersion.valueOf("VERSION_${libs.versions.java.get()}")
         targetCompatibility = JavaVersion.valueOf("VERSION_${libs.versions.java.get()}")
     }
-
-    //noinspection UnresolvedReference
-    project.tasks.configureEach {
-        if (this.name.startsWith("compile") && this.name.contains("Kotlin")) {
-            try {
-                val options = this.javaClass.getMethod("getKotlinOptions").invoke(this)
-                options.javaClass.getMethod("setJvmTarget", String::class.java)
-                    .invoke(options, libs.versions.java.get())
-            } catch (e: Exception) {
-            }
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.valueOf("JVM_${libs.versions.java.get()}")
         }
     }
 

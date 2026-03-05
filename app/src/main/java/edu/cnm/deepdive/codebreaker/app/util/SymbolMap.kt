@@ -1,7 +1,7 @@
 package edu.cnm.deepdive.codebreaker.app.util
 
 import android.content.Context
-import android.content.res.TypedArray
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
@@ -13,40 +13,69 @@ class SymbolMap @Inject constructor(
     @param:ActivityContext private val context: Context
 ) {
 
-    private val mapping: Map<Int, SymbolAttributes>
+    private val symbols: Map<Int, SymbolAttributes>
+    private val keyList: List<Int>
 
     init {
-        val resource = context.resources
-        val names = resource.getStringArray(R.array.color_names)
-        val keys = resource.getStringArray(R.array.color_keys)
-        val values = resource.obtainTypedArray(R.array.color_values).use { arrayOfInts(it) }
-        val drawables = resource.getIntArray(R.array.color_drawables).map {
-            ContextCompat.getDrawable(context, it)!!
-        }
+        val resources = context.resources
+        val names = resources.getStringArray(R.array.color_names)
+        val keys = resources.getStringArray(R.array.color_keys)
+        val values = getColorValues(resources)
+        val drawables = getDrawables(resources)
 
-        mapping = keys.indices.associate { i ->
-            keys[i].codePointAt(0) to SymbolAttributes(values[i], names[i], drawables[i])
+        keyList = keys.map { it.codePointAt(0) }
+        symbols = keyList.indices.associate { i ->
+            keyList[i] to SymbolAttributes(values[i], names[i], drawables[i])
         }
     }
 
-    fun getKeys(): List<Int> = mapping.keys.toList()
+    /**
+     * Returns an unmodifiable list of symbol key codepoints in resource order.
+     */
+    fun getKeys(): List<Int> = keyList
 
-    fun getColor(key: Int): Int = mapping[key]!!.value
+    /**
+     * Returns the Int color value associated with the given key codepoint.
+     * Throws an exception if the key is not found.
+     */
+    fun getColor(key: Int): Int = symbols.getValue(key).value
 
-    fun getName(key: Int): String = mapping[key]!!.name
+    /**
+     * Returns the String name associated with the given key codepoint.
+     * Throws an exception if the key is not found.
+     */
+    fun getName(key: Int): String = symbols.getValue(key).name
 
-    fun getDrawable(key: Int): Drawable = mapping[key]!!.drawable
+    /**
+     * Returns the Drawable associated with the given key codepoint.
+     * Throws an exception if the key is not found.
+     */
+    fun getDrawable(key: Int): Drawable = symbols.getValue(key).drawable
 
-    private fun arrayOfInts(array: TypedArray): IntArray =
-        IntArray(array.length()) { array.getColor(it, Color.TRANSPARENT) }
+    private fun getColorValues(res: Resources): List<Int> {
+        val typedArray = res.obtainTypedArray(R.array.color_values)
+        return try {
+            List(typedArray.length()) { i -> typedArray.getColor(i, Color.TRANSPARENT) }
+        } finally {
+            typedArray.recycle()
+        }
+    }
+
+    private fun getDrawables(res: Resources): List<Drawable> {
+        val typedArray = res.obtainTypedArray(R.array.color_drawables)
+        return try {
+            List(typedArray.length()) { i ->
+                ContextCompat.getDrawable(context, typedArray.getResourceId(i, 0)) as Drawable
+            }
+        } finally {
+            typedArray.recycle()
+        }
+    }
 
     private data class SymbolAttributes(
         val value: Int,
         val name: String,
         val drawable: Drawable
     )
-
-// Utility methods can be added here
-
 
 }
