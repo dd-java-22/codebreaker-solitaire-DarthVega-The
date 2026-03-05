@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <integer-array name="color_drawables">
+    <item>@drawable/square</item>
+    <item>@drawable/square</item>
+    <item>@drawable/square</item>
+    <item>@drawable/square</item>
+    <item>@drawable/square</item>
+    <item>@drawable/square</item>
+    <item>@drawable/square</item>
+  </integer-array>
+</resources>

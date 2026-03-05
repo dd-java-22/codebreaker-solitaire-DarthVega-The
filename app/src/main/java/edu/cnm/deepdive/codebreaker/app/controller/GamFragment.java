@@ -127,8 +127,8 @@ public class GamFragment extends Fragment {
       // "previous guesses will be displayed above the current guess reaching to the top of the screen"
       // "most recent guess being on the bottom"
       // If most recent is on bottom, and it grows UP, it's chronological order.
-      binding.guessHistory.setAdapter(new GuessAdapter(game.getGuesses()));
-      binding.guessHistory.scrollToPosition(game.getGuesses().size() - 1);
+      binding.guesses.setAdapter(new GuessAdapter(game.getGuesses()));
+      binding.guesses.scrollToPosition(game.getGuesses().size() - 1);
     }
   }
 
