@@ -1,3 +1,13 @@
 <resources>
     <string name="test_title">Test</string>
+    <string name="app_name">Codebreaker</string>
+    <string name="send">Send</string>
+    <string name="red">R</string>
+    <string name="orange">O</string>
+    <string name="yellow">Y</string>
+    <string name="green">G</string>
+    <string name="blue">B</string>
+    <string name="indigo">I</string>
+    <string name="violet">V</string>
+    <string name="exact_near_format">%1$d/%2$d</string>
 </resources>
