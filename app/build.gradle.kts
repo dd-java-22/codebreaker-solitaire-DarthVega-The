@@ -24,6 +24,7 @@ plugins {
     alias(libs.plugins.navigation.safeargs)
     alias(libs.plugins.schema.parser)
     alias(libs.plugins.junit)
+    kotlin("android")
 }
 
 android {
@@ -72,6 +73,16 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.valueOf("VERSION_${libs.versions.java.get()}")
         targetCompatibility = JavaVersion.valueOf("VERSION_${libs.versions.java.get()}")
+    }
+
+    //noinspection UnresolvedReference
+    project.tasks.configureEach {
+        if (this.name.startsWith("compile") && this.name.contains("Kotlin")) {
+             try {
+                 val options = this.javaClass.getMethod("getKotlinOptions").invoke(this)
+                 options.javaClass.getMethod("setJvmTarget", String::class.java).invoke(options, libs.versions.java.get())
+             } catch (e: Exception) {}
+        }
     }
 
     buildFeatures {
