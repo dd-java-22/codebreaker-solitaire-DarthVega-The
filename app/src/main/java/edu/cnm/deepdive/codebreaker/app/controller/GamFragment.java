@@ -18,7 +18,9 @@ import edu.cnm.deepdive.codebreaker.api.model.Guess;
 import edu.cnm.deepdive.codebreaker.app.R;
 import edu.cnm.deepdive.codebreaker.app.databinding.FragmentGamBinding;
 import edu.cnm.deepdive.codebreaker.app.databinding.ItemGuessBinding;
+import edu.cnm.deepdive.codebreaker.app.util.SymbolMap;
 import edu.cnm.deepdive.codebreaker.app.viewmodel.GameViewModel;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +29,9 @@ import java.util.stream.Collectors;
 
 @AndroidEntryPoint
 public class GamFragment extends Fragment {
+
+  @Inject
+  SymbolMap symbolMap;
 
   private static final Map<Character, Integer> COLOR_MAP = Map.of(
       'R', Color.RED,
