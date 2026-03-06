@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -32,7 +34,7 @@ public class GamFragment extends Fragment {
 
   @Inject
   SymbolMap symbolMap;
-
+private GameViewModel gameViewModel;
   private static final Map<Character, Integer> COLOR_MAP = Map.of(
       'R', Color.RED,
       'O', Color.parseColor("#FF7F00"),
@@ -70,13 +72,61 @@ public class GamFragment extends Fragment {
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
+    LifecycleOwner LifecycleOwner = getViewLifecycleOwner();
     viewModel
         .getGame()
-        .observe(getViewLifecycleOwner(), this::updateGame);
+        .observe(LifecycleOwner, this::updateGame);
     // Start a game if none is active.
     if (viewModel.getGame().getValue() == null) {
       viewModel.startGame(POOL, LENGTH);
     }
+    gameViewModel
+        .getGame()
+        .observe(LifecycleOwner, (game) -> {
+          //TODO Handle updates to game
+          //1. Clear all children from binding palette.
+          //2. Add new child for every symbol in the game.getPool.
+          // a. Inflate a layout for the symbol.
+          // b. Set the symbol text (contentDescription and tooltip)
+          // c. Set the symbol drawable.
+          // d. Set the symbol drawable's tint.
+          // e. Add the symbol widget to the binding palette children.
+          binding.palette.removeAllViews();
+          game.getPool()
+              .codePoints()
+              .mapToObj((codePoint) -> {
+                //TODO Inflate a layout and return the inflated widget.
+                return (ImageButton) null;
+              })
+                  .map((symbolWidget) -> {
+                    // TODO Set the symbol text.
+                      return symbolWidget;
+                  })
+                  .map((symbolWidget) -> {
+                    //TODO set the symbol's drawable.
+                    return symbolWidget;
+                  })
+                  .map((symbolWidget) -> {
+                    // TODO Set the symbol's drawable tint.
+                    return symbolWidget;
+                  })
+              .forEach(binding.palette::addView);
+        });
+    gameViewModel
+        .getGame()
+        .observe(LifecycleOwner, (solved) -> {
+          //TODO handle changes to solved state of the game.
+        });
+    gameViewModel
+        .getGame()
+        .observe(LifecycleOwner, (guess) -> {
+          //TODO handles updates to the most recent games.
+        });
+    gameViewModel
+        .getGame()
+        .observe(LifecycleOwner, (error) -> {
+          //TODO
+        });
   }
 
   @Override
