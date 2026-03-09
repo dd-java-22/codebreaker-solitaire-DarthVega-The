@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import dagger.hilt.android.qualifiers.ActivityContext;
 import edu.cnm.deepdive.codebreaker.api.model.Guess;
 import edu.cnm.deepdive.codebreaker.app.R;
+import edu.cnm.deepdive.codebreaker.app.databinding.ItemGuessBinding;
 import edu.cnm.deepdive.codebreaker.app.util.SymbolMap;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
@@ -33,13 +34,10 @@ public class GuessesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
   }
 
-
-  private final
-
   @NonNull
   @Override
   public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    return null;
+    return new GuessHolder(ItemGuessBinding.inflate(inflater, parent, false));
   }
 
   @Override
@@ -53,13 +51,33 @@ public class GuessesAdapter extends RecyclerView.Adapter<ViewHolder> {
     return guesses.size();
   }
 
+  public void clear() {
+    int size = guesses.size();
+    guesses.clear();
+    notifyItemRangeRemoved(0, size);
+  }
+
+  public void addAll(List<Guess> guesses) {
+    int startPosition = this.guesses.size();
+    this.guesses.addAll(guesses);
+    notifyItemRangeInserted(startPosition, guesses.size());
+  }
+
   private class GuessHolder extends ViewHolder {
 
-    private GuessHolder(@NonNull View itemView) {
-      super(itemView);
+    private final ItemGuessBinding binding;
+
+    private GuessHolder(@NonNull ItemGuessBinding binding) {
+      super(binding.getRoot());
+      this.binding = binding;
     }
+
     private void bind(int position) {
-      throw new UnsupportedOperationException("bind() method not implemented yet.");
+      Guess guess = guesses.get(position);
+      binding.number.setText(String.format(guessNumberFormat, position + 1));
+      binding.exactMatches.setText(String.format(matchCountFormat, guess.getExactMatches()));
+      binding.nearMatches.setText(String.format(matchCountFormat, guess.getNearMatches()));
+      //TODO: Populate the binding.symbols LinearLayout with the appropriate symbols.
     }
   }
 }
