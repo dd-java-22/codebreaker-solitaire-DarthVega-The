@@ -1,9 +1,11 @@
 package edu.cnm.deepdive.codebreaker.app.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -77,7 +79,17 @@ public class GuessesAdapter extends RecyclerView.Adapter<ViewHolder> {
       binding.number.setText(String.format(guessNumberFormat, position + 1));
       binding.exactMatches.setText(String.format(matchCountFormat, guess.getExactMatches()));
       binding.nearMatches.setText(String.format(matchCountFormat, guess.getNearMatches()));
-
+      binding.symbols.removeAllViews();
+      guess.getText()
+          .codePoints()
+          .forEach((codePoint) -> {
+            ImageView symbolView = (ImageView) inflater.inflate(R.layout.item_guess_symbol, binding.symbols, false);
+            SymbolMap.SymbolAttributes attributes = symbolMap.getAttributes(codePoint);
+            symbolView.setImageResource(attributes.getDrawableId());
+            symbolView.setImageTintList(ColorStateList.valueOf(attributes.getColor()));
+            symbolView.setContentDescription(attributes.getName());
+            binding.symbols.addView(symbolView);
+          });
     }
   }
 }
