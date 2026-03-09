@@ -7,6 +7,9 @@ import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -15,9 +18,13 @@ import android.widget.RadioButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import dagger.hilt.android.AndroidEntryPoint;
 import edu.cnm.deepdive.codebreaker.api.model.Game;
 import edu.cnm.deepdive.codebreaker.api.model.Guess;
@@ -32,7 +39,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 @AndroidEntryPoint
-public class GameFragment extends Fragment {
+public class GameFragment extends Fragment implements MenuProvider {
 
   private static final String TAG = GameFragment.class.getSimpleName();
 
@@ -63,12 +70,32 @@ public class GameFragment extends Fragment {
     gameViewModel.getGuess().observe(lifecycleOwner, this::handleGuess);
     gameViewModel.getError().observe(lifecycleOwner, this::handleError);
     gameViewModel.startGame("ROYGBIV", 4);
+    ((MenuHost) requireActivity()).addMenuProvider(this, lifecycleOwner, Lifecycle.State.RESUMED);
   }
 
   @Override
   public void onDestroyView() {
     binding = null;
     super.onDestroyView();
+  }
+
+  @Override
+  public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+    menuInflater.inflate(R.menu.game_options, menu);
+  }
+
+  @Override
+  public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+    boolean handled = true;
+    if (menuItem.getItemId() == R.id.settings) {
+      Navigation.findNavController(binding.getRoot())
+          .navigate(GameFragmentDirections.navigateToSettings());
+    } else if (menuItem.getItemId() == R.id.new_game) {
+      // TODO: 2026-03-09 Start a new game.
+    } else {
+      handled = false;
+    }
+    return handled;
   }
 
   private void submitGuess() {
