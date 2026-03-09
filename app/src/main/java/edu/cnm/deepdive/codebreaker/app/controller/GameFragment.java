@@ -7,9 +7,6 @@ import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -18,9 +15,9 @@ import android.widget.RadioButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
@@ -37,6 +34,9 @@ import edu.cnm.deepdive.codebreaker.app.viewmodel.GameViewModel;
 import jakarta.inject.Inject;
 import java.util.List;
 import java.util.stream.IntStream;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 @AndroidEntryPoint
 public class GameFragment extends Fragment implements MenuProvider {
@@ -63,20 +63,15 @@ public class GameFragment extends Fragment implements MenuProvider {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    gameViewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
+    FragmentActivity activity = requireActivity();
+    gameViewModel = new ViewModelProvider(activity).get(GameViewModel.class);
     LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
     gameViewModel.getGame().observe(lifecycleOwner, this::handleGame);
     gameViewModel.getSolved().observe(lifecycleOwner, this::handleSolved);
     gameViewModel.getGuess().observe(lifecycleOwner, this::handleGuess);
     gameViewModel.getError().observe(lifecycleOwner, this::handleError);
-    gameViewModel.startGame("ROYGBIV", 4);
-    ((MenuHost) requireActivity()).addMenuProvider(this, lifecycleOwner, Lifecycle.State.RESUMED);
-  }
-
-  @Override
-  public void onDestroyView() {
-    binding = null;
-    super.onDestroyView();
+    gameViewModel.startGame();
+    activity.addMenuProvider(this, lifecycleOwner, Lifecycle.State.RESUMED);
   }
 
   @Override
@@ -87,15 +82,22 @@ public class GameFragment extends Fragment implements MenuProvider {
   @Override
   public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
     boolean handled = true;
-    if (menuItem.getItemId() == R.id.settings) {
+    int itemId = menuItem.getItemId();
+    if (itemId == R.id.settings) {
       Navigation.findNavController(binding.getRoot())
           .navigate(GameFragmentDirections.navigateToSettings());
-    } else if (menuItem.getItemId() == R.id.new_game) {
-      // TODO: 2026-03-09 Start a new game.
+    } else if (itemId == R.id.new_game) {
+      gameViewModel.startGame();
     } else {
       handled = false;
     }
     return handled;
+  }
+
+  @Override
+  public void onDestroyView() {
+    binding = null;
+    super.onDestroyView();
   }
 
   private void submitGuess() {
