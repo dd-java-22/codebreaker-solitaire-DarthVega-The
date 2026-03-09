@@ -1,35 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="test_title">Test</string>
-  <string name="app_name">Codebreaker</string>
-  <string name="send">Send</string>
-  <string name="red">R</string>
-  <string name="orange">O</string>
-  <string name="yellow">Y</string>
-  <string name="green">G</string>
-  <string name="blue">B</string>
-  <string name="indigo">I</string>
-  <string name="violet">V</string>
-  <string name="exact_near_format">%1$d/%2$d</string>
 
-  <string-array name="color_names">
-    <item>Red</item>
-    <item>Orange</item>
-    <item>Yellow</item>
-    <item>Green</item>
-    <item>Blue</item>
-    <item>Indigo</item>
-    <item>Violet</item>
-  </string-array>
+  <string name="submit_guess">Submit guess</string>
 
-  <string-array name="color_keys">
-    <item>R</item>
-    <item>O</item>
-    <item>Y</item>
-    <item>G</item>
-    <item>B</item>
-    <item>I</item>
-    <item>V</item>
-  </string-array>
+  <string name="no_symbol">No symbol</string>
 
 </resources>
-

@@ -5,88 +5,68 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".controller.GamFragment">
-
-
+  tools:context=".controller.GameFragment">
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/guesses"
     android:layout_width="0dp"
     android:layout_height="0dp"
+    android:layout_marginTop="0dp"
+    android:layout_marginBottom="@dimen/half_dynamic_spacing"
+    android:layout_marginHorizontal="0dp"
     android:orientation="vertical"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    app:layout_constraintBottom_toTopOf="@id/current_guess_container"
+    app:layout_constraintBottom_toTopOf="@id/guess_container"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:stackFromEnd="true"
-    tools:listitem="@layout/item_guess"/>
+    app:layout_constraintTop_toTopOf="parent"/>
 
   <LinearLayout
-    android:id="@+id/current_guess_container"
+    android:id="@+id/guess_container"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="0dp"
+    android:layout_marginVertical="@dimen/half_dynamic_spacing"
+    android:background="?attr/colorPrimaryContainer"
     android:gravity="center_vertical"
     android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/half_dynamic_spacing"
     app:layout_constraintBottom_toTopOf="@id/palette"
-    app:layout_constraintEnd_toStartOf="@id/send"
+    app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent">
 
-    <View
-      android:id="@+id/current_color_1"
-      android:layout_width="32dp"
-      android:layout_height="32dp"
-      android:layout_margin="4dp"
-      android:background="@drawable/square"/>
+    <RadioGroup
+      android:id="@+id/guess_controls"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_margin="0dp"
+      android:padding="@dimen/half_dynamic_spacing"
+      android:orientation="horizontal"/>
 
-    <View
-      android:id="@+id/current_color_2"
-      android:layout_width="32dp"
-      android:layout_height="32dp"
-      android:layout_margin="4dp"
-      android:background="@drawable/square"/>
-
-    <View
-      android:id="@+id/current_color_3"
-      android:layout_width="32dp"
-      android:layout_height="32dp"
-      android:layout_margin="4dp"
-      android:background="@drawable/square"/>
-
-    <View
-      android:id="@+id/current_color_4"
-      android:layout_width="32dp"
-      android:layout_height="32dp"
-      android:layout_margin="4dp"
-      android:background="@drawable/square"/>
-
-
+    <ImageButton
+      android:id="@+id/submit"
+      android:layout_width="@dimen/control_size"
+      android:layout_height="@dimen/control_size"
+      android:layout_margin="@dimen/half_dynamic_spacing"
+      android:background="?attr/selectableItemBackgroundBorderless"
+      android:contentDescription="@string/submit_guess"
+      android:scaleType="fitXY"
+      android:src="@drawable/send_button"
+      android:tooltipText="@string/submit_guess"/>
 
   </LinearLayout>
-
-  <ImageButton
-    android:id="@+id/send"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:contentDescription="@string/send"
-    android:layout_margin="@dimen/half_dynamic_spacing"
-    android:src="@android:drawable/ic_menu_send"
-    app:layout_constraintBottom_toTopOf="@id/palette"
-    app:layout_constraintEnd_toEndOf="parent"/>
 
   <LinearLayout
     android:id="@+id/palette"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center"
+    android:layout_margin="@dimen/half_dynamic_spacing"
     android:padding="@dimen/half_dynamic_spacing"
+    android:gravity="center"
+    android:orientation="horizontal"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent">
-
-
-  </LinearLayout>
+    app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
