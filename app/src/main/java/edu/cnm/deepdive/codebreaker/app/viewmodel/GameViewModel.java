@@ -1,7 +1,5 @@
 package edu.cnm.deepdive.codebreaker.app.viewmodel;
 
-import static java.util.Arrays.stream;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -16,6 +14,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext;
 import edu.cnm.deepdive.codebreaker.api.model.Game;
 import edu.cnm.deepdive.codebreaker.api.model.Guess;
 import edu.cnm.deepdive.codebreaker.app.R;
+import edu.cnm.deepdive.codebreaker.app.service.GameService;
 import edu.cnm.deepdive.codebreaker.client.service.CodebreakerService;
 import jakarta.inject.Inject;
 import java.util.Comparator;
@@ -33,16 +32,17 @@ public class GameViewModel extends ViewModel {
 
   private static final String TAG = GameViewModel.class.getSimpleName();
 
-  private final CodebreakerService gameService;
+  private final GameService gameService;
   private final MutableLiveData<Game> game;
   private final MutableLiveData<Guess> guess;
   private final LiveData<Boolean> solved;
   private final MutableLiveData<Throwable> error;
+
   private final IntSupplier codeLengthSupplier;
   private final Supplier<String> codePoolSupplier;
 
   @Inject
-  GameViewModel(@ApplicationContext Context context, CodebreakerService gameService) {
+  GameViewModel(@ApplicationContext Context context, GameService gameService) {
     this.gameService = gameService;
     game = new MutableLiveData<>();
     guess = new MutableLiveData<>();
@@ -106,7 +106,6 @@ public class GameViewModel extends ViewModel {
           if (Boolean.TRUE.equals(g.getSolution())) {
             fetchGame(game.getId());
           } else {
-            game.getGuesses().add(g);
             this.game.postValue(game);
           }
         });
@@ -140,7 +139,6 @@ public class GameViewModel extends ViewModel {
     String codeLengthPrefKey = resources.getString(R.string.code_length_pref_key);
     int codeLengthPrefDefault = resources.getInteger(R.integer.code_length_pref_default);
     return () -> prefs.getInt(codeLengthPrefKey, codeLengthPrefDefault);
-
   }
 
   private Supplier<String> getCodePoolSupplier(SharedPreferences prefs, Resources resources) {
@@ -150,7 +148,6 @@ public class GameViewModel extends ViewModel {
         .boxed()
         .collect(Collectors.toMap((pos) -> codePoolPrefDefault[pos].codePointAt(0), (pos) -> pos));
     Comparator<Integer> symbolComparator = Comparator.comparing(symbolPositions::get);
-
     return () -> prefs.getStringSet(codePoolPrefKey, Set.of(codePoolPrefDefault))
         .stream()
         .map((symbol) -> symbol.codePointAt(0))
