@@ -31,10 +31,13 @@ dependencyResolutionManagement {
             url = uri("https://ddc-java.github.io/version-catalogs/")
         }
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> bff0d22 (Removed `libs.versions.toml`, added Mermaid ERD, and configured external version catalog.)
     versionCatalogs {
         create("libs") {
-            from("edu.cnm.deepdive:catalog-jdk21:22.0.2")
+            from("edu.cnm.deepdive:catalog-jdk21:22.0.1")
         }
     }
 }
