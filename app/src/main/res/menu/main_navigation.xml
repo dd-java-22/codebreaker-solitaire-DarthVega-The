@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item
+    android:id="@+id/game_fragment"
+    android:icon="@drawable/play"
+    android:title="@string/play" />
+
+  <item
+    android:id="@+id/in_progress_fragment"
+    android:icon="@drawable/cloud_download"
+    android:title="@string/load_game" />
+
+</menu>
