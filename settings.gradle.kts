@@ -31,13 +31,12 @@ dependencyResolutionManagement {
             url = uri("https://ddc-java.github.io/version-catalogs/")
         }
     }
-
     versionCatalogs {
         create("libs") {
-            from("edu.cnm.deepdive:catalog-jdk21:22.0.1")
+            from("edu.cnm.deepdive:catalog-jdk21:22.0.2")
         }
     }
 }
 
 rootProject.name = "codebreaker-solitaire"
-include(":api", ":client",":javafx")
+include(":api", ":client",":javafx", "app")
